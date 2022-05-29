@@ -1,6 +1,6 @@
 <?php
 
-abstract class WebParser {
+class PolovniAutomobiliWebParser extends WebParser {
     /**
      * Parse listing page and return array of data collected from listing page.
      *
@@ -9,7 +9,9 @@ abstract class WebParser {
      *
      * @return array Array of parsed data.
      */
-    public abstract function parseListing(string $content, string $uri = null): array;
+    public function parseListing(string $content, string $uri = null): array {
+
+    }
 
     /**
      * Parse product page and return data about one or more products.
@@ -19,7 +21,9 @@ abstract class WebParser {
      *
      * @return array Array of parsed data.
      */
-    public abstract function parseProductPage(string $content, string $uri = null): array;
+    public function parseProductPage(string $content, string $uri = null): array {
+
+    }
 
     /**
      * Parse given content and get URL to the next page as string, or null if next page URL is not found.
@@ -29,5 +33,7 @@ abstract class WebParser {
      *
      * @return string|null String representing URL of next page.
      */
-    public abstract function parseNextPageLink(string $content, string $uri = null): ?string;
+    public function parseNextPageLink(string $content, string $uri = null): ?string {
+
+    }
 }
