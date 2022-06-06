@@ -1,33 +1,16 @@
 <?php
 
 abstract class WebParser {
-    /**
-     * Parse listing page and return array of data collected from listing page.
-     *
-     * @param string $content
-     * @param string|null $uri
-     *
-     * @return array Array of parsed data.
-     */
-    public abstract function parseListing(string $content, string $uri = null): array;
+    public abstract function parseListing(string $content): array;
 
-    /**
-     * Parse product page and return data about one or more products.
-     *
-     * @param string $content
-     * @param string|null $uri
-     *
-     * @return array Array of parsed data.
-     */
-    public abstract function parseProductPage(string $content, string $uri = null): array;
+    public abstract function parseSinglePage(string $content): array;
 
-    /**
-     * Parse given content and get URL to the next page as string, or null if next page URL is not found.
-     *
-     * @param string $content
-     * @param string|null $uri
-     *
-     * @return string|null String representing URL of next page.
-     */
-    public abstract function parseNextPageLink(string $content, string $uri = null): ?string;
+    public abstract function parseNextPageLink(string $content): ?string;
+
+    protected function convertStringHtmlPageToDomXPath(string $content): DOMXPath {
+        $dom = new DOMDocument();
+        $dom->loadHTML($content);
+
+        return new DOMXPath($dom);
+    }
 }

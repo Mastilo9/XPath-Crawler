@@ -28,10 +28,15 @@ class DatabaseService {
     /**
      * @throws \Exception
      */
-    public function executeQuery(string $query) {
+    public function executeQuery(string $query): ?array {
         if(!($results = mysqli_query($this->connection, $query))) {
             throw new \Exception('No data in database!');
         }
+
+        if ($results === true) {
+            return null;
+        }
+
         return mysqli_fetch_all($results,MYSQLI_ASSOC);
     }
 
@@ -41,5 +46,9 @@ class DatabaseService {
 
     public function getConnection(): mysqli {
         return $this->connection;
+    }
+
+    public function isConnectionEstablished(): bool {
+        return isset($this->connection);
     }
 }

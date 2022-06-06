@@ -10,7 +10,7 @@ class CurlClientService {
     }
 
     public function request(string $url, bool $useProxy = false): string {
-        $max_try_count = 10;
+        $max_try_count = 5;
 
         do {
             $ch = curl_init();

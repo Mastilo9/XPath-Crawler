@@ -1,38 +1,16 @@
 <?php
 
 class WebCrawlerCommand {
-    private DatabaseService $dbService;
     private WebCrawler $crawler;
 
-    public function __construct(DatabaseService $dbService, WebCrawler $crawler) {
-        $this->dbService = $dbService;
+    public function __construct(WebCrawler $crawler) {
         $this->crawler = $crawler;
     }
 
     public function run(): void {
-        $products = [];
-
         // fetch and process products
         $crawler = $this->getCrawler();
-        $products = $crawler->run();
-
-
-
-        $a = 1;
-    }
-
-    /**
-     * @return DatabaseService
-     */
-    public function getDbService(): DatabaseService {
-        return $this->dbService;
-    }
-
-    /**
-     * @param DatabaseService $dbService
-     */
-    public function setDbService(DatabaseService $dbService): void {
-        $this->dbService = $dbService;
+        $crawler->run();
     }
 
     /**
