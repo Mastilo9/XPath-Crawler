@@ -1,3 +1,3 @@
 <?php
 
-phpinfo();
+include './zadatak3.php';
