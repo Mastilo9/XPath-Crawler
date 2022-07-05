@@ -13,24 +13,117 @@ function get10MostPopularLocations(DatabaseService $dbService) {
 }
 
 function getMileageChartInfo(DatabaseService $dbService) {
-    $data = getNumberOfCarsPerMileageOffsets($dbService, 'mileage', 'km', 0, 50000);
-    $data = array_merge($data, getNumberOfCarsPerMileageOffsets($dbService, 'mileage', 'km', 50000, 100000));
-    $data = array_merge($data, getNumberOfCarsPerMileageOffsets($dbService, 'mileage', 'km', 100000, 150000));
-    $data = array_merge($data, getNumberOfCarsPerMileageOffsets($dbService, 'mileage', 'km', 150000, 200000));
-    $data = array_merge($data, getNumberOfCarsPerMileageOffsets($dbService, 'mileage', 'km', 200000, 250000));
-    $data = array_merge($data, getNumberOfCarsPerMileageOffsets($dbService, 'mileage', 'km', 250000, 300000));
-    return array_merge($data, getNumberOfCarsPerMileageOffsets($dbService, 'mileage', 'km', 300000));
+    $sql = "
+        (
+            SELECT '0 - 50000km' as label, COUNT(*) as value
+            FROM product
+            WHERE mileage < 50000
+        )
+        UNION
+        (
+            SELECT '50000 - 100000km' as label, COUNT(*) as value
+            FROM product
+            WHERE mileage >= 50000 AND mileage < 100000
+        )
+        UNION
+        (
+            SELECT '100000 - 150000km' as label, COUNT(*) as value
+            FROM product
+            WHERE mileage >= 100000 AND mileage < 150000
+        )
+        UNION
+        (
+            SELECT '150000-200000km' as label, COUNT(*) as value
+            FROM product
+            WHERE mileage >= 150000 AND mileage < 200000
+        )
+        UNION
+        (
+            SELECT '200000-250000km' as label, COUNT(*) as value
+            FROM product
+            WHERE mileage >= 200000 AND mileage < 250000
+        )
+        UNION
+        (
+            SELECT '250000-300000km' as label, COUNT(*) as value
+            FROM product
+            WHERE mileage >= 250000 AND mileage < 300000
+        )
+        UNION
+        (
+            SELECT '> 300000km' as label, COUNT(*) as value
+            FROM product
+            WHERE mileage >= 300000
+        )
+    ";
+
+    return $dbService->executeQuery($sql);
 }
 
 function getAgeChartInfo(DatabaseService $dbService) {
-    $data = getNumberOfCarsPerMileageOffsets($dbService, 'age', 'god.', 0, 1960);
-    $data = array_merge($data, getNumberOfCarsPerMileageOffsets($dbService, 'age', 'god.', 1960, 1970));
-    $data = array_merge($data, getNumberOfCarsPerMileageOffsets($dbService, 'age', 'god.', 1970, 1980));
-    $data = array_merge($data, getNumberOfCarsPerMileageOffsets($dbService, 'age', 'god.', 1980, 1990));
-    $data = array_merge($data, getNumberOfCarsPerMileageOffsets($dbService, 'age', 'god.', 1990, 2000));
-    $data = array_merge($data, getNumberOfCarsPerMileageOffsets($dbService, 'age', 'god.', 2000, 2010));
-    $data = array_merge($data, getNumberOfCarsPerMileageOffsets($dbService, 'age', 'god.', 2010, 2020));
-    return array_merge($data, getNumberOfCarsPerMileageOffsets($dbService, 'age', 'god.', 2020, 2022));
+    $sql = "
+        (
+            SELECT '0 - 1960g.' as label, COUNT(*) as value
+            FROM product
+            WHERE age <= 1960
+        )
+        UNION
+        (
+            SELECT '1961 - 1970g.' as label, COUNT(*) as value
+            FROM product
+            WHERE age > 1960 AND age <= 1970
+        )
+        UNION
+        (
+            SELECT '1971 - 1980g.' as label, COUNT(*) as value
+            FROM product
+            WHERE age > 1970 AND age <= 1980
+        )
+        UNION
+        (
+            SELECT '1981 - 1990g.' as label, COUNT(*) as value
+            FROM product
+            WHERE age > 1981 AND age <= 1990
+        )
+        UNION
+        (
+            SELECT '1991 - 2000g.' as label, COUNT(*) as value
+            FROM product
+            WHERE age > 1991 AND age <= 2000
+        )
+        UNION
+        (
+            SELECT '2001 - 2005g.' as label, COUNT(*) as value
+            FROM product
+            WHERE age > 2000 AND age <= 2005
+        )
+        UNION
+        (
+            SELECT '2006 - 2010g.' as label, COUNT(*) as value
+            FROM product
+            WHERE age > 2005 AND age <= 2010
+        )
+        UNION
+        (
+            SELECT '2011 - 2015g.' as label, COUNT(*) as value
+            FROM product
+            WHERE age > 2010 AND age <= 2015
+        )
+        UNION
+        (
+            SELECT '2016 - 2020g.' as label, COUNT(*) as value
+            FROM product
+            WHERE age > 2015 AND age <= 2020
+        )
+        UNION
+        (
+            SELECT '2021 - 2022g.' as label, COUNT(*) as value
+            FROM product
+            WHERE age > 2020 AND age <= 2022
+        )
+    ";
+
+    return $dbService->executeQuery($sql);
 }
 
 function getTransmissionTypeChartInfo(DatabaseService $dbService) {
@@ -39,7 +132,7 @@ function getTransmissionTypeChartInfo(DatabaseService $dbService) {
             SELECT CONCAT('manuelni(', COUNT(1) / t.cnt * 100, '%)') AS label, COUNT(1)  AS 'value'
             FROM product
             CROSS JOIN (SELECT COUNT(1) AS cnt FROM product) t
-            WHERE product.transmissionType LIKE '%manuelni%'
+            WHERE product.transmissionType LIKE '%Manuelni%'
             GROUP BY t.cnt
         )
         UNION
@@ -47,7 +140,7 @@ function getTransmissionTypeChartInfo(DatabaseService $dbService) {
             SELECT CONCAT('automatski(', COUNT(1) / t.cnt * 100, '%)') AS label, COUNT(1)  AS 'value'
             FROM product
             CROSS JOIN (SELECT COUNT(1) AS cnt FROM product) t
-            WHERE product.transmissionType LIKE '%automatski%'
+            WHERE product.transmissionType LIKE '%Automatski%'
             GROUP BY t.cnt
         );
     ";
@@ -120,24 +213,6 @@ function getPriceChartInfo(DatabaseService $dbService) {
             WHERE product.price >= 30000
             GROUP BY t.cnt
         );
-    ";
-
-    return $dbService->executeQuery($sql);
-}
-
-function getNumberOfCarsPerMileageOffsets(DatabaseService $dbService, $columnName, $metricName, $lowerOffset, $higherOffset = null) {
-    if ($higherOffset === null) {
-        $labelName = "'> {$lowerOffset}{$metricName}'";
-        $where_condition = "{$columnName} >= {$lowerOffset}";
-    } else {
-        $labelName = "'{$lowerOffset}{$metricName} - {$higherOffset}{$metricName}'";
-        $where_condition = "{$columnName} >= {$lowerOffset} AND {$columnName} < {$higherOffset}";
-    }
-
-    $sql = "
-        SELECT {$labelName} as label, COUNT(*) as value
-        FROM product
-        WHERE {$where_condition}
     ";
 
     return $dbService->executeQuery($sql);
